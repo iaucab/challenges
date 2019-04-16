@@ -79,17 +79,15 @@ def drawPath(endValue, x,y):
 
     region[x][y].value=0
     region[x][y].visited = False
-
-    printRegion()
     return False
 
 
 
 printRegion()
 drawPath(3,1,1)
+print("")
 printRegion()
     
-
 
 
 
