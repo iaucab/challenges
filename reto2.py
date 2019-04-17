@@ -2,7 +2,7 @@
 
 import sys
 
-#Objective: Find the shortest path between 3 and 2
+#Objective: Find the shortest path between -3 and -2
 
 #Note: This is python3 
 
@@ -36,7 +36,6 @@ class Block:
 
 region=[]  #an array of blocks
 
-
 for i in range(len(maze)):
     reglist=[]
     for j in range(len(maze)):
@@ -58,8 +57,8 @@ def printRegion():
                 print(region[i][j].value,end=" ", flush=True)     
         print("...")
 
+def drawPath(endValue, x,y):
 
-def drawPath(endValue,x,y):
     if(x<0 or x>19 or y<0 or y>19): return False
 
     if(region[x][y].visited or region[x][y].value==1): return False
@@ -70,63 +69,17 @@ def drawPath(endValue,x,y):
     
     region[x][y].value = '.'
 
-    directions={'d':0, 'u':0,'r':0, 'l':0}
+    if drawPath(endValue,x+1,y): return True
 
-    dummy=region
+    if drawPath(endValue,x-1,y): return True
 
-    directions['d']= countSteps(endValue,x+1,y,dummy)
- 
-    directions['u']= countSteps(endValue,x-1,y,dummy)
+    if drawPath(endValue,x,y+1): return True
 
-    directions['r']= countSteps(endValue,x,y+1,dummy)
-
-    directions['l']= countSteps(endValue,x,y-1,dummy)
-
-    direction= max(directions, key=directions.get)
-    print('dir', direction)
-    print('list', directions)
-
-
-    if direction=='d' and drawPath(endValue,x+1,y): return True
-
-    if direction=='u' and drawPath(endValue,x-1,y): return True
-
-    if direction=='r' and drawPath(endValue,x,y+1): return True
-
-    if direction=='l' and drawPath(endValue,x,y-1): return True
+    if drawPath(endValue,x,y-1): return True
 
     region[x][y].value=0
     region[x][y].visited = False
-
-    printRegion()
     return False
-
-def countSteps(endValue, x,y,dummy):
-
-    if(x<0 or x>19 or y<0 or y>19): return 0
-
-    if(dummy[x][y].visited or dummy[x][y].value==1): return 0
-
-    if(dummy[x][y].value == endValue): return 1
-
-    dummy[x][y].visited = True
-  
-
-  
-    if countSteps(endValue,x,y+1,dummy): return countSteps(endValue,x,y+1,dummy)+1
-    if countSteps(endValue,x-1,y,dummy): return countSteps(endValue,x-1,y,dummy)+1
-
-    if countSteps(endValue,x,y-1,dummy): return countSteps(endValue,x,y-1,dummy)+1
-
-    if countSteps(endValue,x+1,y,dummy): return countSteps(endValue,x,y-1,dummy)+1
-
-  
-    dummy[x][y].visited = False
-
-    return 0
-
-
-    
 
 
 
@@ -134,8 +87,6 @@ printRegion()
 drawPath(3,1,1)
 print("")
 printRegion()
-    
-
 
 
 
