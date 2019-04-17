@@ -36,6 +36,7 @@ class Block:
 
 region=[]  #an array of blocks
 
+
 for i in range(len(maze)):
     reglist=[]
     for j in range(len(maze)):
@@ -57,62 +58,80 @@ def printRegion():
                 print(region[i][j].value,end=" ", flush=True)     
         print("...")
 
-def drawPath(endValue, x,y,region):
+
+def drawPath(endValue,x,y):
+    if(x<0 or x>19 or y<0 or y>19): return False
+
+    if(region[x][y].visited or region[x][y].value==1): return False
+
+    if(region[x][y].value == endValue): return True
+
+    region[x][y].visited = True
+    
+    region[x][y].value = '.'
+
+    directions={'d':0, 'u':0,'r':0, 'l':0}
+
+    dummy=region
+
+    directions['d']= countSteps(endValue,x+1,y,dummy)
+ 
+    directions['u']= countSteps(endValue,x-1,y,dummy)
+
+    directions['r']= countSteps(endValue,x,y+1,dummy)
+
+    directions['l']= countSteps(endValue,x,y-1,dummy)
+
+    direction= max(directions, key=directions.get)
+    print('dir', direction)
+    print('list', directions)
+
+
+    if direction=='d' and drawPath(endValue,x+1,y): return True
+
+    if direction=='u' and drawPath(endValue,x-1,y): return True
+
+    if direction=='r' and drawPath(endValue,x,y+1): return True
+
+    if direction=='l' and drawPath(endValue,x,y-1): return True
+
+    region[x][y].value=0
+    region[x][y].visited = False
+
+    printRegion()
+    return False
+
+def countSteps(endValue, x,y,dummy):
 
     if(x<0 or x>19 or y<0 or y>19): return 0
 
-    if(region[x][y].visited or region[x][y].value==1): return 0
+    if(dummy[x][y].visited or dummy[x][y].value==1): return 0
 
-    if(region[x][y].value == endValue): return 1
+    if(dummy[x][y].value == endValue): return 1
 
-    region[x][y].visited = True
-    region[x][y].value='.'
-    
-
-    dummy = region
-    
-    up=0
-    down=0
-    right=0
-    left=0
-
-    if drawPath(endValue,x+1,y,dummy): down = 1+drawPath(endValue,x+1,y,dummy)
-    if drawPath(endValue,x-1,y,dummy): up = 1+drawPath(endValue,x-1,y,dummy)
-    if drawPath(endValue,x,y+1,dummy): right = 1+drawPath(endValue,x,y+1,dummy)
-    if drawPath(endValue,x,y-1,dummy): left = 1+drawPath(endValue,x,y-1,dummy)
-
-
-    #select max
-
-    directions = {'d': down, 'u': up, 'r': right, 'l': left}
-    direction= min(directions, key=directions.get)
-    
-    print('direction',direction)
-
-      
-    if direction=='d':  
-        return 1+drawPath(endValue,x+1,y,region)
-
-    if direction=='u':  
-        return 1+drawPath(endValue,x-1,y,region)
-
-    if direction=='r':  
-        return 1+drawPath(endValue,x,y+1,region)
-
-    if direction=='l':  
-        return 1+drawPath(endValue,x,y-1,region)
+    dummy[x][y].visited = True
+  
 
   
-    region[x][y].value=0
-    region[x][y].visited = False
+    if countSteps(endValue,x,y+1,dummy): return countSteps(endValue,x,y+1,dummy)+1
+    if countSteps(endValue,x-1,y,dummy): return countSteps(endValue,x-1,y,dummy)+1
+
+    if countSteps(endValue,x,y-1,dummy): return countSteps(endValue,x,y-1,dummy)+1
+
+    if countSteps(endValue,x+1,y,dummy): return countSteps(endValue,x,y-1,dummy)+1
+
+  
+    dummy[x][y].visited = False
+
     return 0
+
 
     
 
 
 
 printRegion()
-drawPath(3,1,1,region)
+drawPath(3,1,1)
 print("")
 printRegion()
     
